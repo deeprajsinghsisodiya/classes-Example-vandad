@@ -1,0 +1,385 @@
+void main(List<String> args) {
+  const person1 = Person(
+    name: 'John',
+    age: 20,
+  );
+  print(person1.name);
+  print(person1.age);
+}
+
+class Person {
+  final String name;
+  final int age;
+  const Person({
+    required this.name,
+    required this.age,
+  });
+}
+
+I/flutter ( 5645): John
+I/flutter ( 5645): 20
+
+
+
+/ex2
+
+void main(List<String> args) {
+  const me = Person('Bob', 20);
+  print(me.name);
+  print(me.age);
+  print('---------------------');
+
+  const foo = Person.foo();
+  print(foo.name);
+  print(foo.age);
+  print('---------------------');
+
+  const bar = Person.bar(30);
+  print(bar.name);
+  print(bar.age);
+  print('---------------------');
+
+  const baz = Person.other();
+  print(baz.name);
+  print(baz.age);
+
+  print('---------------------');
+
+  const john = Person.other(name: 'John');
+  print(john.name);
+  print(john.age);
+
+  print('---------------------');
+
+  const jill = Person.other(name: 'Jill', age: 40);
+  print(jill.name);
+  print(jill.age);
+}
+
+class Person {
+  final String name;
+  final int age;
+  const Person(
+      this.name,
+      this.age,
+      );
+
+  const Person.foo()
+      : name = 'Foo',
+        age = 20;
+
+  const Person.bar(
+      this.age,
+      ) : name = 'Bar';
+
+  const Person.other({
+    String? name,
+    int? age,
+  })  : name = name ?? 'Baz',
+        age = age ?? 30;
+}
+
+I/flutter ( 5645): Bob
+I/flutter ( 5645): 20
+I/flutter ( 5645): ---------------------
+I/flutter ( 5645): Foo
+I/flutter ( 5645): 20
+I/flutter ( 5645): ---------------------
+I/flutter ( 5645): Bar
+I/flutter ( 5645): 30
+I/flutter ( 5645): ---------------------
+I/flutter ( 5645): Baz
+I/flutter ( 5645): 30
+I/flutter ( 5645): ---------------------
+I/flutter ( 5645): John
+I/flutter ( 5645): 30
+I/flutter ( 5645): ---------------------
+I/flutter ( 5645): Jill
+I/flutter ( 5645): 40
+
+/ex3
+
+void main(List<String> args) {
+  final v = Vehicle(4);
+  print(v);
+  print(v.toString());
+
+  print(Car());
+  print(Bicycle());
+}
+
+class Vehicle {
+  final int wheelCount;
+  const Vehicle(this.wheelCount);
+  @override
+  String toString() {
+    // if (runtimeType == Vehicle) {
+    //   return 'Vehicle with $wheelCount wheels';
+    // } else {
+    //   return super.toString();
+    // }
+
+    return '$runtimeType with $wheelCount wheels';
+  }
+}
+
+class Car extends Vehicle {
+  const Car() : super(4);
+}
+
+class Bicycle extends Vehicle {
+  const Bicycle() : super(2);
+}
+
+I/flutter ( 5645): Vehicle with 4 wheels
+I/flutter ( 5645): Vehicle with 4 wheels
+I/flutter ( 5645): Car with 4 wheels
+I/flutter ( 5645): Bicycle with 2 wheels
+
+/ex4
+
+void main(List<String> args) {
+  const foo = Person(
+    firstName: 'Foo',
+    lastName: 'Bar',
+  );
+  print(foo.fullName);
+}
+
+class Person {            //1st
+  final String firstName;
+  final String lastName;
+  String get fullName => '$firstName $lastName';
+
+  const Person({
+    required this.firstName,
+    required this.lastName,
+  });
+}
+
+
+class Person {        //2nd
+  final String firstName;
+  final String lastName;
+  final String fullName;
+
+  const Person({
+    required this.firstName,
+    required this.lastName,
+  }) : fullName = '$firstName $lastName';
+}
+
+1st // I/flutter ( 5645): Foo Bar
+2nd  // I/flutter ( 5645): Foo Bar
+
+
+/ex5
+/
+
+void main(List<String> args) {
+  final car = Car();
+  car.drive(speed: 20);
+  print('Speed is ${car.speed}');
+  car.drive(speed: 40);
+  car.stop();
+}
+
+class Car {
+  int speed = 0;
+
+  void drive({
+    required int speed,
+  }) {
+    this.speed = speed;
+    print('Accelerating to $speed km/h');
+  }
+
+  void stop() {
+    speed = 0;
+    print('Stopping...');
+    print('Stopped');
+  }
+}
+I/flutter ( 5645): Accelerating to 20 km/h
+I/flutter ( 5645): Speed is 20
+I/flutter ( 5645): Accelerating to 40 km/h
+I/flutter ( 5645): Stopping...
+I/flutter ( 5645): Stopped
+
+
+/ex6
+void main(List<String> args) {
+  final car = Car();
+  try {
+    car.drive(speed: 10);
+    car.drive(speed: -1);
+  } catch (e) {
+    print(e);
+  }
+}
+
+class Car {
+  int _speed = 0;
+
+  int get speed => _speed;
+  set speed(int newSpeed) {
+    if (newSpeed < 0) {
+      throw Exception('Speed cannot be negative');
+    } else {
+      _speed = newSpeed;
+    }
+  }
+
+  void drive({
+    required int speed,
+  }) {
+    this.speed = speed;
+    print('Accelerating to $speed km/h');
+  }
+
+  void stop() {
+    speed = 0;
+    print('Stopping...');
+    print('Stopped');
+  }
+}
+
+I/flutter ( 5645): Accelerating to 10 km/h
+I/flutter ( 5645): Exception: Speed cannot be negative
+
+
+
+///ex7
+
+void main(List<String> args) {
+  print(Car.carsInstantiated);
+  Car(name: 'My Car');
+  print(Car.carsInstantiated);
+  Car(name: 'Your Car');
+  print(Car.carsInstantiated);
+}
+
+class Car {
+  static int _carInstantiated = 0;
+
+  static int get carsInstantiated => _carInstantiated;
+  static void _incrementCarsInstantiated() => _carInstantiated++;
+
+  final String name;
+  Car({
+    required this.name,
+  }) {
+    _incrementCarsInstantiated();
+  }
+}
+
+I/flutter ( 5645): 0
+I/flutter ( 5645): 1
+I/flutter ( 5645): 2
+
+
+/ex8
+/
+void main(List<String> args) {
+  print(Vehicle.car());
+  print(Vehicle.truck());
+}
+
+class Vehicle {
+  const Vehicle();
+
+  factory Vehicle.car() => Car();
+  factory Vehicle.truck() => Truck();
+
+  @override
+  String toString() => 'Vehicle of type $runtimeType';
+}
+
+class Car extends Vehicle {
+  const Car();
+}
+
+class Truck extends Vehicle {
+  const Truck();
+}
+
+I/flutter ( 5645): Vehicle of type Car
+I/flutter ( 5645): Vehicle of type Truck
+
+/ex9
+void main(List<String> args) {
+  final mom = Mom();
+  print(mom.role);
+  final dad = Dad();
+  print(dad.role);
+}
+
+enum Role { mom, dad, son, daughter, grandpa, grandma }
+
+class Person {
+  final Role role;
+
+  const Person({
+    required this.role,
+  });
+}
+
+class Mom extends Person {
+  const Mom() : super(role: Role.mom);
+}
+
+class Dad extends Person {
+  const Dad() : super(role: Role.dad);
+}
+
+I/flutter ( 5645): Role.mom
+I/flutter ( 5645): Role.dad
+
+
+/ex10
+void main(List<String> args) {
+  const car = Car();
+  print(car.kind);
+  car.accelerate();
+  car.decelerate();
+  const motorcycle = Motorcycle();
+  print(motorcycle.kind);
+  motorcycle.accelerate();
+  motorcycle.decelerate();
+}
+
+abstract class Vehicle {
+  final VehicleKind kind;
+  const Vehicle({required this.kind});
+
+  void accelerate() => print('$kind is accelerating');
+  void decelerate() => print('$kind is decelerating');
+}
+
+class Car extends Vehicle {
+  const Car() : super(kind: VehicleKind.car);
+}
+
+class Motorcycle implements Vehicle {
+  const Motorcycle();
+  @override
+  void accelerate() => print('Motorcycle is accelerating');
+  @override
+  void decelerate() => print('Motorcycle is decelerating');
+  @override
+  VehicleKind get kind => VehicleKind.motorcycle;
+}
+
+enum VehicleKind {
+  car,
+  truck,
+  motorcycle,
+  bicycle,
+}
+
+I/flutter ( 5645): VehicleKind.car
+I/flutter ( 5645): VehicleKind.car is accelerating
+I/flutter ( 5645): VehicleKind.car is decelerating
+I/flutter ( 5645): VehicleKind.motorcycle
+I/flutter ( 5645): Motorcycle is accelerating
+I/flutter ( 5645): Motorcycle is decelerating
